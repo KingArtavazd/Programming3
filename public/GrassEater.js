@@ -5,6 +5,7 @@ class GrassEater {
         this.energy = 0;
         this.multiply = 0;
         this.index = index;
+        this.gender = Math.round(Math.random());
     }
     getNewCoordinates() {
         this.directions = [
@@ -64,7 +65,7 @@ class GrassEater {
             this.multiply++;
             this.energy++;
             if (this.multiply==3) {
-                this.mul();
+                this.searchMate();
                 this.multiply=0;
             }
             if (this.energy==0){
@@ -83,6 +84,22 @@ class GrassEater {
             grasseaterArr.push(newGrassEater);
             matrix[this.y][this.x] = 2;
             matrix[patahakan[1]][patahakan[0]] = 2;
+        }
+    }
+    searchMate() {
+        var otherClassCells = this.chooseCell(2);
+
+        for(var e in otherClassCells){
+
+            var x = otherClassCells[e].x;
+            var y = otherClassCells[e].y;
+
+            for(var i in grasseaterArr){
+                if(grasseaterArr[i].x == x && grasseaterArr[i].y == y && this.gender != grasseaterArr[i].gender){
+                    this.mul ();
+                    return;
+                }
+            }
         }
     }
     die() {

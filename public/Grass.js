@@ -1,6 +1,5 @@
-class Grass extends Optimal {
+class Grass {
     constructor(x, y, index) {
-        super(x, y, index)
         this.x = x;
         this.y = y;
         this.index = index;

@@ -2,7 +2,7 @@ class Lentrush {
     constructor(x, y, index) {
         this.x = x;
         this.y = y;
-        this.energy = 40;
+        this.energy = 20;
         this.multiply = 0;
 
         this.index = index;

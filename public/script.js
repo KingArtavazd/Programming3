@@ -42,12 +42,12 @@ var grasseaterArr = [];
 var gishatichArr = [];
 var manArr = [];
 var lentrushArr = [];
-var matrix = randomMatrix(100, 100);
+var matrix = randomMatrix(60, 60);
 
-var side = 10;
+var side = 15;
 
 function setup() {
-    frameRate(100);
+    frameRate(10);
     createCanvas(matrix[0].length * side, matrix.length * side);
     background("#acacac");
 
