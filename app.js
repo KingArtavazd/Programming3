@@ -1,14 +1,32 @@
 var express = require('express');
-var path = require('path');
 var app = express();
+var server = require('http').Server(app);
+var io = require('socket.io') (server);
 
-// Define the port to run on
-app.set('port', process.env.PORT || 3000);
+var matrix = require('./modules/optimal');
+var grass = require('./modules/Grass');
+var grasseater = require('./modules/GrassEater');
+var gishatich = require('./modules/Gishatich');
+var man = require('./modules/Man');
+var lentrush = require('./modules/Lentrush');
 
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static("."));
 
-// Listen for requests
-var server = app.listen(app.get('port'), function() {
-  var port = server.address().port;
-  console.log('Magic happens on port ' + port);
+app.get('/', function (req, res) {
+    res.redirect('public/index.html');
+});
+server.listen(3000);
+
+var frameCount = 5;
+
+var drawTime = 1000/frameCount;
+
+io.on('connection', function(socket){
+  socket.emit( 'matrix', matrix);
+
+  
+
+  var inter = setInterval( function(){
+    socket.emit('redraw', matrix);
+  }, drawTime);
 });
