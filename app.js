@@ -4,11 +4,11 @@ var server = require('http').Server(app);
 var io = require('socket.io') (server);
 
 var matrix = require('./modules/optimal');
-var grass = require('./modules/Grass');
-var grasseater = require('./modules/GrassEater');
-var gishatich = require('./modules/Gishatich');
-var man = require('./modules/Man');
-var lentrush = require('./modules/Lentrush');
+var Grass = require('./modules/Grass');
+var GrassEater = require('./modules/GrassEater');
+var Gishatich = require('./modules/Gishatich');
+var Man = require('./modules/Man');
+var Lentrush = require('./modules/Lentrush');
 
 app.use(express.static("."));
 
@@ -23,9 +23,7 @@ var drawTime = 1000/frameCount;
 
 io.on('connection', function(socket){
   socket.emit( 'matrix', matrix);
-
   
-
   var inter = setInterval( function(){
     socket.emit('redraw', matrix);
   }, drawTime);

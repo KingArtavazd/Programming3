@@ -1,4 +1,4 @@
-class GrassEater {
+module.exports = class GrassEater {
     constructor(x, y, index) {
         this.x = x;
         this.y = y;
@@ -96,7 +96,7 @@ class GrassEater {
 
             for(var i in grasseaterArr){
                 if(grasseaterArr[i].x == x && grasseaterArr[i].y == y && this.gender != grasseaterArr[i].gender){
-                    this.mul ();
+                    this.mul();
                     return;
                 }
             }

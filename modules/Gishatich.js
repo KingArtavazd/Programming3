@@ -1,10 +1,11 @@
-class Gishatich {
+module.exports = class Gishatich {
     constructor(x, y, index) {
         this.x = x;
         this.y = y;
         this.energy = 40;
         this.multiply = 0;
         this.index = index;
+        this.gender = Math.round(Math.random());
     }
     getNewCoordinates() {
         this.directions = [
@@ -83,6 +84,22 @@ class Gishatich {
             var newGishatich = new Gishatich(patahakan[0], patahakan[1], this.index);
             gishatichArr.push(newGishatich);
 
+        }
+    }
+    searchMate() {
+        var otherClassCells = this.chooseCell(3);
+
+        for(var e in otherClassCells){
+
+            var x = otherClassCells[e].x;
+            var y = otherClassCells[e].y;
+
+            for(var i in grasseaterArr){
+                if(grasseaterArr[i].x == x && grasseaterArr[i].y == y && this.gender != grasseaterArr[i].gender){
+                    this.mul();
+                    return;
+                }
+            }
         }
     }
     die() {

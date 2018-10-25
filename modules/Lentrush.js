@@ -1,11 +1,11 @@
-class Lentrush {
+module.exports = class Lentrush {
     constructor(x, y, index) {
         this.x = x;
         this.y = y;
         this.energy = 20;
         this.multiply = 0;
-
         this.index = index;
+        this.gender = Math.round(Math.random());
     }
     getNewCoordinates() {
         this.directions = [
@@ -104,6 +104,22 @@ class Lentrush {
                 var newGrassEater = new GrassEater(x, y, 1);
                 grasseaterArr.push(newGrassEater);
 
+        }
+    }
+    searchMate() {
+        var otherClassCells = this.chooseCell(4);
+
+        for(var e in otherClassCells){
+
+            var x = otherClassCells[e].x;
+            var y = otherClassCells[e].y;
+
+            for(var i in grasseaterArr){
+                if(grasseaterArr[i].x == x && grasseaterArr[i].y == y && this.gender != grasseaterArr[i].gender){
+                    this.mul();
+                    return;
+                }
+            }
         }
     }
     die() {

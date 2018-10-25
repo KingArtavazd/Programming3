@@ -15,7 +15,7 @@ function setup()
         socket.on('redraw', function(mtx){
             matrix = mtx;
             redraw();
-            console.log("tick");
+            // console.log("tick");
         });
     });
     background("#acacac");

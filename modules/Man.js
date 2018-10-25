@@ -1,10 +1,11 @@
-class Man {
+module.exports = class Man {
     constructor(x, y, index) {
         this.x = x;
         this.y = y;
         this.energy = 40;
         this.multiply = 0;
         this.index = index;
+        this.gender = Math.round(Math.random());
     }
     getNewCoordinates() {
         this.directions = [
@@ -123,6 +124,22 @@ class Man {
                 var newGishatich = new Gishatich(x, y, 1);
                 gishatichArr.push(newGishatich);
 
+        }
+    }
+    searchMate() {
+        var otherClassCells = this.chooseCell(10);
+
+        for(var e in otherClassCells){
+
+            var x = otherClassCells[e].x;
+            var y = otherClassCells[e].y;
+
+            for(var i in grasseaterArr){
+                if(grasseaterArr[i].x == x && grasseaterArr[i].y == y && this.gender != grasseaterArr[i].gender){
+                    this.mul();
+                    return;
+                }
+            }
         }
     }
     die() {
