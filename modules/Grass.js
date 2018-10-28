@@ -1,3 +1,7 @@
+function getRandom(array){
+    var y = array[Math.floor(Math.random() * array.length)];
+    return y;
+}
 module.exports = class Grass {
     constructor(x, y, index) {
         this.x = x;
@@ -15,7 +19,7 @@ module.exports = class Grass {
             [this.x + 1, this.y + 1]
         ];
     }
-    chooseCell(character) {
+    chooseCell(character, matrix) {
         var found = [];
         for (var i in this.directions) {
             var x = this.directions[i][0];
@@ -28,10 +32,10 @@ module.exports = class Grass {
         }
         return found;
     }
-    mul() {
+    mul(grassArr, matrix) {
         this.multiply++;
-        var newCell = random(this.chooseCell(0));
-        if (this.multiply >= 5 && newCell) {
+        var newCell = getRandom(this.chooseCell(0, matrix));
+        if (this.multiply >= 50 && newCell) {
             var newGrass = new Grass(newCell[0], newCell[1], this.index);
             grassArr.push(newGrass);
             matrix[newCell[1]][newCell[0]] = 1;

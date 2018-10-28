@@ -1,9 +1,13 @@
+function getRandom(array){
+    var y = array[Math.floor(Math.random() * array.length)];
+    return y;
+}
 module.exports = class Gishatich {
     constructor(x, y, index) {
         this.x = x;
         this.y = y;
-        this.energy = 40;
-        this.multiply = 0;
+        this.energy = 150;
+        this.multiply = 3;
         this.index = index;
         this.gender = Math.round(Math.random());
     }
@@ -19,7 +23,7 @@ module.exports = class Gishatich {
             [this.x + 1, this.y + 1]
         ];
     }
-    chooseCell(character1, character2) {
+    chooseCell(matrix, character1, character2) {
         this.getNewCoordinates()
         var found = [];
         for (var i in this.directions) {
@@ -33,23 +37,20 @@ module.exports = class Gishatich {
         }
         return found;
     }
-    move() {
-        var vandakdatark = this.chooseCell(0, 1);
-        var patahakan = random(vandakdatark);
+    move(matrix) {
+        var vandakdatark = this.chooseCell(matrix, 1,0);
+        var patahakan = getRandom(vandakdatark);
         if (patahakan) {
             matrix[this.y][this.x] = 0;
             matrix[patahakan[1]][patahakan[0]] = 3;
             this.x = patahakan[0];
             this.y = patahakan[1];
             this.energy--;
-            if (this.energy == 0) {
-                this.die();
-            }
         }
     }
-    eat() {
-        var vandakdatark = this.chooseCell(2);
-        var patahakan = random(vandakdatark);
+    eat(grasseaterArr, gishatichArr, matrix) {
+        var vandakdatark = this.chooseCell(matrix, 2);
+        var patahakan = getRandom(vandakdatark);
         if (patahakan) {
             matrix[patahakan[1]][patahakan[0]] = 3;
             matrix[this.y][this.x] = 0;
@@ -64,20 +65,20 @@ module.exports = class Gishatich {
             this.multiply++;
             this.energy++;
             if (this.multiply == 5) {
-                this.mul();
-                this.multiply = 0;
+                this.searchMate(gishatichArr, matrix);
+                this.multiply = 3;
             }
             if (this.energy == 0) {
-                this.die();
+                this.die(gishatichArr, matrix);
             }
         }
         else {
-            this.move();
+            this.move(matrix);
         }
     }
-    mul() {
-        var vandakdatark = this.chooseCell(0);
-        var patahakan = random(vandakdatark);
+    mul(gishatichArr, matrix) {
+        var vandakdatark = this.chooseCell(matrix, 0);
+        var patahakan = getRandom(vandakdatark);
         if (patahakan) {
             matrix[this.y][this.x] = 3;
             matrix[patahakan[1]][patahakan[0]] = 3;
@@ -86,28 +87,28 @@ module.exports = class Gishatich {
 
         }
     }
-    searchMate() {
-        var otherClassCells = this.chooseCell(3);
+    searchMate(gishatichArr, matrix) {
+        var otherClassCells = this.chooseCell(matrix, 3);
 
-        for(var e in otherClassCells){
+        for (var e in otherClassCells) {
 
             var x = otherClassCells[e].x;
             var y = otherClassCells[e].y;
 
-            for(var i in grasseaterArr){
-                if(grasseaterArr[i].x == x && grasseaterArr[i].y == y && this.gender != grasseaterArr[i].gender){
-                    this.mul();
+            for (var i in gishatichArr) {
+                if (gishatichArr[i].x == x && [i].y == y && this.gender != gishatichArr[i].gender) {
+                    this.mul(gishatichArr, matrix);
                     return;
                 }
             }
         }
     }
-    die() {
+    die(gishatichArr, matrix) {
         for (var i in gishatichArr) {
             if (this.x == gishatichArr[i].x && this.y == gishatichArr[i].y) {
                 gishatichArr.splice(i, 1);
             }
         }
-                matrix[this.y][this.x] = 0;
+        matrix[this.y][this.x] = 0;
     }
 }

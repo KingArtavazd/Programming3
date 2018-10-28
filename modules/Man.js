@@ -1,9 +1,13 @@
+function getRandom(array){
+    var y = array[Math.floor(Math.random() * array.length)];
+    return y;
+}
 module.exports = class Man {
     constructor(x, y, index) {
         this.x = x;
         this.y = y;
-        this.energy = 40;
-        this.multiply = 0;
+        this.energy = 150;
+        this.multiply = 2;
         this.index = index;
         this.gender = Math.round(Math.random());
     }
@@ -59,7 +63,7 @@ module.exports = class Man {
             [this.x + 3, this.y + 3]
         ];
     }
-    chooseCell(character1, character2) {
+    chooseCell(matrix, character1, character2) {
         this.getNewCoordinates()
         var found = [];
         for (var i in this.directions) {
@@ -73,9 +77,9 @@ module.exports = class Man {
         }
         return found;
     }
-    move() {
-        var vandakdatark = this.chooseCell(0, 1);
-        var patahakan = random(vandakdatark);
+    move(matrix) {
+        var vandakdatark = this.chooseCell(matrix, 0, 1);
+        var patahakan = getRandom(vandakdatark);
         if (patahakan) {
             matrix[this.y][this.x] = 0;
             matrix[patahakan[1]][patahakan[0]] = 10;
@@ -84,9 +88,9 @@ module.exports = class Man {
             this.energy--;
         }
     }
-    eat() {
-        var vandakdatark = this.chooseCell(2);
-        var patahakan = random(vandakdatark);
+    eat(grasseaterArr, manArr, matrix) {
+        var vandakdatark = this.chooseCell(matrix, 2);
+        var patahakan = getRandom(vandakdatark);
         if (patahakan) {
             matrix[this.y][this.x] = 0;
             matrix[patahakan[1]][patahakan[0]] = 10;
@@ -100,49 +104,47 @@ module.exports = class Man {
             this.y = patahakan[1];
             this.multiply++;
             this.energy++;
-            if (this.energy == 0) {
-                this.die();
+            if (this.energy <= 0) {
+                this.die(manArr, matrix);
             }
-            if (this.multiply == 4) {
-                this.mul();
-                this.multiply = 0;
+            if (this.multiply == 5) {
+                this.searchMate(manArr, matrix);
+                this.multiply = 2;
             }
         }
         else {
-            this.move();
+            this.move(matrix);
         }
     }
-    mul() {
-        var vandakdatark = this.chooseCell(0);
-        var patahakan = random(vandakdatark);
-        if (patahakan){
-                var x = patahakan[0];
-                var y = patahakan[1];
-                matrix[this.y][this.x] = this.index;
-                var newMan = new Man(x, y, 1);
-                manArr.push(newMan);
-                var newGishatich = new Gishatich(x, y, 1);
-                gishatichArr.push(newGishatich);
+    mul(manArr, matrix) {
+        var vandakdatark = this.chooseCell(matrix, 0);
+        var patahakan = getRandom(vandakdatark);
+        if (patahakan) {
+            var x = patahakan[0];
+            var y = patahakan[1];
+            matrix[this.y][this.x] = this.index;
+            var newMan = new Man(x, y, 1);
+            manArr.push(newMan);
 
         }
     }
-    searchMate() {
-        var otherClassCells = this.chooseCell(10);
+    searchMate(manArr, matrix) {
+        var otherClassCells = this.chooseCell(matrix, 10);
 
-        for(var e in otherClassCells){
+        for (var e in otherClassCells) {
 
             var x = otherClassCells[e].x;
             var y = otherClassCells[e].y;
 
-            for(var i in grasseaterArr){
-                if(grasseaterArr[i].x == x && grasseaterArr[i].y == y && this.gender != grasseaterArr[i].gender){
-                    this.mul();
+            for (var i in manArr) {
+                if (manArr[i].x == x && manArr[i].y == y && this.gender != manArr[i].gender) {
+                    this.mul(manArr, matrix);
                     return;
                 }
             }
         }
     }
-    die() {
+    die(manArr, matrix) {
         for (var i in manArr) {
             if (this.x == manArr[i].x && this.y == manArr[i].y) {
                 manArr.splice(i, 1);

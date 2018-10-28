@@ -1,8 +1,12 @@
+function getRandom(array){
+    var y = array[Math.floor(Math.random() * array.length)];
+    return y;
+}
 module.exports = class GrassEater {
     constructor(x, y, index) {
         this.x = x;
         this.y = y;
-        this.energy = 0;
+        this.energy = 50;
         this.multiply = 0;
         this.index = index;
         this.gender = Math.round(Math.random());
@@ -19,7 +23,7 @@ module.exports = class GrassEater {
             [this.x + 1, this.y + 1]
         ];
     }
-    chooseCell(character) {
+    chooseCell(matrix, character) {
         this.getNewCoordinates()
         var found = [];
         for (var i in this.directions) {
@@ -33,23 +37,20 @@ module.exports = class GrassEater {
         }
         return found;
     }
-    move() {
-        var vandakdatark = this.chooseCell(0);
-        var patahakan = random(vandakdatark);
+    move(matrix) {
+        var vandakdatark = this.chooseCell(matrix, 0);
+        var patahakan = getRandom(vandakdatark);
         if (patahakan) {
             matrix[this.y][this.x] = 0;
             matrix[patahakan[1]][patahakan[0]] = 2;
             this.x = patahakan[0];
             this.y = patahakan[1];
             this.energy--;
-            if (this.energy <= 0) {
-                this.die();
-            }
         }
     }
-    eat() {
-        var vandakdatark = this.chooseCell(1);
-        var patahakan = random(vandakdatark);
+    eat(grassArr, grasseaterArr, matrix) {
+        var vandakdatark = this.chooseCell(matrix, 1);
+        var patahakan = getRandom(vandakdatark);
         if (patahakan) {
             matrix[this.y][this.x] = 0;
             matrix[patahakan[1]][patahakan[0]] = 2;
@@ -64,21 +65,21 @@ module.exports = class GrassEater {
             this.y = patahakan[1];
             this.multiply++;
             this.energy++;
-            if (this.multiply==3) {
-                this.searchMate();
-                this.multiply=0;
+            if (this.multiply == 3) {
+                this.searchMate(grasseaterArr, matrix);
+                this.multiply = 0;
             }
-            if (this.energy==0){
-                this.die();
+            if (this.energy == 0) {
+                this.die(grasseaterArr, matrix);
             }
         }
         else {
-            this.move();
+            this.move(matrix);
         }
     }
-    mul() {
-        var vandakdatark = this.chooseCell(0);
-        var patahakan = random(vandakdatark);
+    mul(grasseaterArr, matrix) {
+        var vandakdatark = this.chooseCell(matrix, 0);
+        var patahakan = getRandom(vandakdatark);
         if (patahakan) {
             var newGrassEater = new GrassEater(patahakan[0], patahakan[1], this.index);
             grasseaterArr.push(newGrassEater);
@@ -86,23 +87,23 @@ module.exports = class GrassEater {
             matrix[patahakan[1]][patahakan[0]] = 2;
         }
     }
-    searchMate() {
-        var otherClassCells = this.chooseCell(2);
+    searchMate(grasseaterArr, matrix) {
+        var otherClassCells = this.chooseCell(matrix, 2);
 
-        for(var e in otherClassCells){
+        for (var e in otherClassCells) {
 
             var x = otherClassCells[e].x;
             var y = otherClassCells[e].y;
 
-            for(var i in grasseaterArr){
-                if(grasseaterArr[i].x == x && grasseaterArr[i].y == y && this.gender != grasseaterArr[i].gender){
-                    this.mul();
+            for (var i in grasseaterArr) {
+                if (grasseaterArr[i].x == x && grasseaterArr[i].y == y && this.gender != grasseaterArr[i].gender) {
+                    this.mul(grasseaterArr, matrix);
                     return;
                 }
             }
         }
     }
-    die() {
+    die(grasseaterArr, matrix) {
         matrix[this.y][this.x] = 0;
 
         for (var i in grasseaterArr) {

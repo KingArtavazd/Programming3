@@ -1,28 +1,35 @@
 var side = 10;
 var socket;
 var matrix;
+var statistika;
+var margin = 50;
 
-function setup() 
-{
+function setup() {
     frameRate(0);
     socket = io.connect();
 
-    socket.on('matrix', function(mtx){
+    socket.on('matrix', function (mtx) {
+        background("#acacac");
         matrix = mtx;
-        createCanvas(matrix[0].length * side, matrix.length * side);
+        createCanvas(matrix[0].length * side + 700, matrix.length * side);
         noLoop();
+        redraw();
 
-        socket.on('redraw', function(mtx){
+        socket.on('redraw', function (mtx) {
             matrix = mtx;
             redraw();
             // console.log("tick");
         });
+        socket.on('Text', function (Statistika) {
+            statistika = Statistika;
+      });
     });
-    background("#acacac");
+
+ 
 }
 
-function draw()
-{
+function draw() {
+    background("#acacac");
     for (var y = 0; y < matrix.length; y++) {
         for (var x = 0; x < matrix[y].length; x++) {
             if (matrix[y][x] == 1) {
@@ -50,6 +57,13 @@ function draw()
                 rect(x * side, y * side, side, side);
             }
         }
-
     }
+    for(var i in statistika){
+        fill(0, 0, 0);
+        textSize(20);
+        text(i + ":"+ " "+ statistika[i], 1020, margin)
+        margin+=40;
+    }
+    margin = 40;
+
 }

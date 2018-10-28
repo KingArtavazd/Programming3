@@ -1,9 +1,13 @@
+function getRandom(array){
+    var y = array[Math.floor(Math.random() * array.length)];
+    return y;
+}
 module.exports = class Lentrush {
     constructor(x, y, index) {
         this.x = x;
         this.y = y;
-        this.energy = 20;
-        this.multiply = 0;
+        this.energy = 150;
+        this.multiply = 3;
         this.index = index;
         this.gender = Math.round(Math.random());
     }
@@ -35,7 +39,7 @@ module.exports = class Lentrush {
             [this.x + 2, this.y + 2]
         ];
     }
-    chooseCell(character1, character2, character3) {
+    chooseCell(matrix, character1, character2, character3) {
         this.getNewCoordinates()
         var found = [];
         for (var i in this.directions) {
@@ -49,9 +53,9 @@ module.exports = class Lentrush {
         }
         return found;
     }
-    move() {
-        var vandakdatark = this.chooseCell(0,1,2);
-        var patahakan = random(vandakdatark);
+    move(matrix) {
+        var vandakdatark = this.chooseCell(matrix, 0, 1, 2);
+        var patahakan = getRandom(vandakdatark);
         if (patahakan) {
             matrix[this.y][this.x] = 0;
             matrix[patahakan[1]][patahakan[0]] = 4;
@@ -60,69 +64,67 @@ module.exports = class Lentrush {
             this.energy--;
         }
     }
-    eat() {
-        var vandakdatark = this.chooseCell(3,10);
-        var patahakan = random(vandakdatark);
+    eat(gishatichArr, manArr, lentrushArr, matrix) {
+        var vandakdatark = this.chooseCell(matrix, 3, 1);
+        var patahakan = getRandom(vandakdatark);
         if (patahakan) {
             matrix[this.y][this.x] = 0;
             matrix[patahakan[1]][patahakan[0]] = 4;
-             for (var i in gishatichArr) {
-            if (this.x == gishatichArr[i].x && this.y == gishatichArr[i].y) {
-                gishatichArr.splice(i, 1);
+            for (var i in gishatichArr) {
+                if (this.x == gishatichArr[i].x && this.y == gishatichArr[i].y) {
+                    gishatichArr.splice(i, 1);
+                }
             }
-        }
-         for (var i in manArr) {
-            if (this.x == manArr[i].x && this.y == manArr[i].y) {
-                manArr.splice(i, 1);
+            for (var i in manArr) {
+                if (this.x == manArr[i].x && this.y == manArr[i].y) {
+                    manArr.splice(i, 1);
+                }
             }
-        }
             this.x = patahakan[0];
             this.y = patahakan[1];
             this.multiply++;
             this.energy++;
-            if (this.energy == 0) {
-                this.die();
+            if (this.energy <= 0) {
+                this.die(lentrushArr, matrix);
             }
-            if (this.multiply == 7) {
-                this.mul();
-                this.multiply = 0;
+            if (this.multiply == 5) {
+                this.searchMate(lentrushArr, matrix);
+                this.multiply = 2;
             }
         }
         else {
-            this.move();
+            this.move(matrix);
         }
     }
-    mul() {
-        var vandakdatark = this.chooseCell(0);
-        var patahakan = random(vandakdatark);
-        if (patahakan){
-                var x = patahakan[0];
-                var y = patahakan[1];
-                matrix[this.y][this.x] = this.index;
-                var newLentrush = new  Lentrush(x, y, 1);
-                lentrushArr.push(newLentrush);
-                var newGrassEater = new GrassEater(x, y, 1);
-                grasseaterArr.push(newGrassEater);
+    mul(lentrushArr, matrix) {
+        var vandakdatark = this.chooseCell(matrix, 0);
+        var patahakan = getRandom(vandakdatark);
+        if (patahakan) {
+            var x = patahakan[0];
+            var y = patahakan[1];
+            matrix[this.y][this.x] = this.index;
+            var newLentrush = new Lentrush(x, y, 1);
+            lentrushArr.push(newLentrush);
 
         }
     }
-    searchMate() {
-        var otherClassCells = this.chooseCell(4);
+    searchMate(lentrushArr, matrix) {
+        var otherClassCells = this.chooseCell(matrix, 4);
 
-        for(var e in otherClassCells){
+        for (var e in otherClassCells) {
 
             var x = otherClassCells[e].x;
             var y = otherClassCells[e].y;
 
-            for(var i in grasseaterArr){
-                if(grasseaterArr[i].x == x && grasseaterArr[i].y == y && this.gender != grasseaterArr[i].gender){
-                    this.mul();
+            for (var i in lentrushArr) {
+                if (lentrushArr[i].x == x && lentrushArr[i].y == y && this.gender != lentrushArr[i].gender) {
+                    this.mul(lentrushArr, matrix);
                     return;
                 }
             }
         }
     }
-    die() {
+    die(lentrushArr, matrix) {
         for (var i in lentrushArr) {
             if (this.x == lentrushArr[i].x && this.y == lentrushArr[i].y) {
                 lentrushArr.splice(i, 1);
